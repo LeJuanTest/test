@@ -235,7 +235,7 @@ def signin(request):
             auth.login(request, user)
             return redirect('/')
         else:
-            messages.info(request, 'Credentials Invalid')
+            messages.info(request, 'Credentials Invalid.')
             return redirect('signin')
 
     else:
