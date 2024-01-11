@@ -21,7 +21,6 @@ def index(request):
 
     for users in user_following:
         user_following_list.append(users.user)
-        feed.append(feed_lists)
 
     for usernames in user_following_list:
         feed_lists = Post.objects.filter(user=usernames)
