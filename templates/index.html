@@ -120,10 +120,11 @@
                             <ul class="dropdown_scrollbar" data-simplebar>
                                 <li>
                                     <a href="#">
-                                        <div class="drop_avatar"> <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="">
+                                        <div class="drop_avatar"> <img src="{{user_profile.profileimg.url}}" alt="">
                                         </div>
+                                        <form action="/follow" method="POST"></form>
                                         <div class="drop_content">
-                                            <p> <strong class="text-link" ><b>{{user.username}}</b></strong>  
+                                            <p> <strong class="text-link" ><b>{{user_follower}}</b></strong>  
                                                 <span class="text-link"> is following you  </span>
                                             </p>
                                             <span class="time-ago"> 2 hours ago </span>
