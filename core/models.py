@@ -46,3 +46,5 @@ class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
+    follower_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+

@@ -162,13 +162,17 @@ def follow(request):
             new_follower = FollowersCount.objects.create(follower=follower, user=user)
             new_follower.save()
 
-            # Crea una notificación
+            # Obtiene el perfil del usuario que sigue
+            follower_profile = Profile.objects.get(user__username=follower)
+
+            # Crea una notificación utilizando el perfil del usuario que sigue
             notification_text = f'{follower} is now following you.'
-            Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now())
+            Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now(), follower_profile=follower_profile)
 
             return redirect('/profile/'+user)
     else:
         return redirect('/')
+
 
 
 
