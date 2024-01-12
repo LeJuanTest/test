@@ -119,13 +119,18 @@
                                     <li>
                                         <a href="#">
                                             <div class="drop_avatar">
-                                                <!-- Puedes mostrar la imagen del usuario de la notificación si tienes esa información -->
+                                                {% if notification.user.profile_image %}
+                                                    <img src="{{ notification.user.profile_image.url }}" alt="Profile Image">
+                                                {% else %}
+                                                    <!-- Si no tienes una imagen de perfil, puedes mostrar una imagen predeterminada o dejarlo en blanco -->
+                                                {% endif %}
                                             </div>
                                             <div class="drop_content">
                                                 <p>
                                                     <strong class="text-link">
                                                         <b>{{ notification.user.username }}</b>
                                                     </strong>
+                                                    <br>
                                                     <span class="text-link">{{ notification.text }}</span>
                                                 </p>
                                                 <span class="time-ago">{{ notification.timestamp|timesince }} ago</span>
@@ -136,6 +141,7 @@
                             </ul>
                             <a href="#" class="see-all">See all</a>
                         </div>
+
 
                         <!-- Messages -->
 
