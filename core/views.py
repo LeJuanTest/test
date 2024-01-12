@@ -61,9 +61,10 @@ def index(request):
 
 @login_required(login_url='signin')
 def upload(request):
+
     if request.method == 'POST':
         user = request.user.username
-        image = request.FILES.get('image_upload')  # Asegúrate de que el nombre coincide con el campo de tu formulario
+        image = request.FILES.get('image_upload')
         caption = request.POST['caption']
 
         new_post = Post.objects.create(user=user, image=image, caption=caption)
