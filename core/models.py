@@ -23,10 +23,10 @@ class Post(models.Model):
     image = models.ImageField(upload_to='post_images')
     caption = models.TextField()
     created_at = models.DateTimeField(default=datetime.now)
-    likes = models.ManyToManyField(User, related_name='liked_posts')
+    no_of_likes = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.user} - {self.id}"
+        return self.user
 
 class LikePost(models.Model):
     post_id = models.CharField(max_length=500)
@@ -36,11 +36,11 @@ class LikePost(models.Model):
         return self.username
 
 class FollowersCount(models.Model):
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+    follower = models.CharField(max_length=100)
+    user = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.follower.username} follows {self.user.username}"
+        return self.user
     
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
