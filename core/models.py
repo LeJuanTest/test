@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 import uuid
 from datetime import datetime
@@ -40,3 +41,8 @@ class FollowersCount(models.Model):
 
     def __str__(self):
         return self.user
+    
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)

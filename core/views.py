@@ -3,7 +3,8 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Post, LikePost, FollowersCount
+from datetime import datetime
+from .models import Profile, Post, LikePost, FollowersCount, Notification
 from itertools import chain
 import random
 
@@ -13,6 +14,9 @@ import random
 def index(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
+
+    # Obtener las notificaciones para el usuario actual
+    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:5]
 
     user_following_list = []
     feed = []
@@ -53,8 +57,7 @@ def index(request):
 
     suggestions_username_profile_list = list(chain(*username_profile_list))
 
-
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts':feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4]})
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts':feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'notifications': notifications})
 
 @login_required(login_url='signin')
 def upload(request):
@@ -149,16 +152,25 @@ def follow(request):
         follower = request.POST['follower']
         user = request.POST['user']
 
+        # Verifica si el seguidor ya sigue al usuario
         if FollowersCount.objects.filter(follower=follower, user=user).first():
             delete_follower = FollowersCount.objects.get(follower=follower, user=user)
             delete_follower.delete()
             return redirect('/profile/'+user)
         else:
+            # Crea una nueva entrada en FollowersCount
             new_follower = FollowersCount.objects.create(follower=follower, user=user)
             new_follower.save()
+
+            # Crea una notificación
+            notification_text = f'{follower} is now following you.'
+            Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now())
+
             return redirect('/profile/'+user)
     else:
         return redirect('/')
+
+
 
 @login_required(login_url='signin')
 def settings(request):
