@@ -132,6 +132,10 @@ AWS_STORAGE_BUCKET_NAME = 'socialmedia-mountain'
 AWS_S3_SIGNATURE_VERSION ='s3v4' 
 AWS_S3_REGION_NAME = 'us-west-2'  # Por ejemplo, 'us-east-1'
 
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
@@ -144,6 +148,5 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
