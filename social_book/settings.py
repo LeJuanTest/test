@@ -129,6 +129,7 @@ USE_TZ = True
 AWS_ACCESS_KEY_ID = 'AKIAVRUVVLV7DK7WR5XT'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'socialmedia-mountain'
+AWS_S3_SIGNATURE_VERSION ='s3v4' 
 AWS_S3_REGION_NAME = 'us-west-2'  # Por ejemplo, 'us-east-1'
 
 STATIC_URL = '/static/'
