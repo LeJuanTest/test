@@ -126,19 +126,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-AWS_ACCESS_KEY_ID = 'AKIAVRUVVLV7DK7WR5XT'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIAVRUVVLV7JVWSP3XL'
+AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'socialmedia-mountain'
 AWS_S3_SIGNATURE_VERSION ='s3v4' 
 AWS_S3_REGION_NAME = 'us-west-2'  # Por ejemplo, 'us-east-1'
+AWS_QUERYSTRING_AUTH = False
 
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
 
 django_heroku.settings(locals(), staticfiles=False)
 #STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
