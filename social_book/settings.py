@@ -125,6 +125,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+AWS_ACCESS_KEY_ID = 'AKIAVRUVVLV7DK7WR5XT'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'socialmedia-mountain'
+AWS_S3_REGION_NAME = 'us-west-2'  # Por ejemplo, 'us-east-1'
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
@@ -137,5 +142,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
