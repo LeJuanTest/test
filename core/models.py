@@ -22,6 +22,7 @@ class Post(models.Model):
     user = models.CharField(max_length=100)
     image = models.ImageField(upload_to='post_images')
     caption = models.TextField()
+    video_url = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)
     no_of_likes = models.IntegerField(default=0)
 
@@ -48,3 +49,12 @@ class Notification(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     follower_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
 
+
+class Video(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    video = models.FileField(upload_to='videos/')
+    caption = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.created_at}'

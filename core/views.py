@@ -123,7 +123,6 @@ def profile(request, pk):
     user_profile = Profile.objects.get(user=user_object)
     user_posts = Post.objects.filter(user=pk)
     user_post_length = len(user_posts)
-
     follower = request.user.username
     user = pk
 
