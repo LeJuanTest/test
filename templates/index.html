@@ -47,7 +47,7 @@
                     <div class="right-side lg:pr-4">
                           <!-- upload -->
                         <a href="#"
-                        class="bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shado text-white">
+                        class="button bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shado text-white">
                         <ion-icon name="add-circle" class="-mb-1
                          mr-1 opacity-90 text-xl uilus-circle"></ion-icon> Upload Pics
                     </a>
@@ -64,25 +64,32 @@
 
                             <div class="flex flex-col choose-upload text-center">
                                
-                                <div class="bg-gray-100 border-2 border-dashed flex flex-col h-24 items-center justify-center relative w-full rounded-lg  ">
+                                <div class="bg-gray-300 border-2 border-dashed flex flex-col h-24 items-center justify-center relative w-full rounded-lg  ">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-12">
                                         <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
                                         <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
                                     </svg>
                                 </div>
 
-                                <form action="upload" method="POST" enctype="multipart/form-data" >
-                                {% csrf_token %}
-                                <p class="my-3 leading-6"> Upload pics
-                                </p>
-                                <div>
-                                    <input type="file" name="image_upload">
-                                    <a href="#" class="button soft-warning small"> Choose file</a>
-                                    <textarea class="button soft-warning small" name="caption" placeholder="caption..." ></textarea>
+                                <form action="upload" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
                                     <br>
-                                    <button class="button bg-blue-700" type="submit" >Upload</button>
-                                </div>
+                                    <div>
+                                        <input type="file" name="image_upload" id="fileInput" style="display: none;" onchange="updateFileName()">
+                                        <label for="fileInput" class="button bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white  justify-center lg:block h-10 px-4 py-2 rounded shado text-white">Choose file</label>
+                                        <span id="fileName" style="margin-left: 10px;"></span>
+                                        <textarea class="button soft-warning small" name="caption" placeholder="caption..."></textarea>
+                                        <br>
+                                        <button class="button bg-blue-700" type="submit">Upload</button>
+                                    </div>
                                 </form>
+                                
+                                <script>
+                                    function updateFileName() {
+                                        var fileName = document.getElementById('fileInput').files[0].name;
+                                        document.getElementById('fileName').innerHTML = fileName;
+                                    }
+                                </script>
 
                                 <!-- <a href="#" class="uk-text-muted mt-3 uk-link"
                                     uk-toggle="target: .choose-upload ;  animation: uk-animation-slide-right-small, uk-animation-slide-left-medium; queued: true">
