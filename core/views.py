@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from .models import Profile, Post, LikePost, FollowersCount, Notification
@@ -255,6 +255,11 @@ def signin(request):
 
     else:
         return render(request, 'signin.html')
+    
+def delete_notification(request, notification_id):
+    notification = get_object_or_404(Notification, pk=notification_id)
+    notification.delete()
+    return JsonResponse({'message': 'Notification deleted successfully'})
 
 @login_required(login_url='signin')
 def logout(request):

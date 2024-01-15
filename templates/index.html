@@ -134,7 +134,7 @@
                             <h4 class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">Notification </h4>
                             <ul class="dropdown_scrollbar" data-simplebar>
                                 {% for notification in notifications %}
-                                    <li>
+                                    <li id="notification-{{ notification.id }}">
                                         <a href="#">
                                             <div class="drop_avatar">
                                                 <img src="{{ notification.follower_profile.profileimg.url }}" alt="{{ notification.user.username }} profile image">
@@ -149,6 +149,12 @@
                                                 </p>
                                                 <span class="time-ago">{{ notification.timestamp|timesince }} ago</span>
                                             </div>
+                                            <!-- X button -->
+                                            <button class="delete-button" onclick="deleteNotification('{{ notification.id }}')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                                </svg>
+                                            </button>
                                         </a>
                                     </li>
                                 {% endfor %}
@@ -156,6 +162,28 @@
                             <a href="#" class="see-all">See all</a>
                         </div>
 
+                        <script>
+                            function deleteNotification(notificationId) {       
+                                fetch(`/delete_notification/${notificationId}/`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRFToken': '{{ csrf_token }}',
+                                    },
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    const notificationElement = document.getElementById(`notification-${notificationId}`);
+                                    if (notificationElement) {
+                                        notificationElement.remove();
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('There was a problem with the fetch operation:', error);
+                                });
+                            }
+                        </script>
 
 
                         <!-- Messages -->

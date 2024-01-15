@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views
+from .views import delete_notification
 
 urlpatterns = [
     path('defaultsite', views.index, name='index'),
     path('', views.index, name='index'),
     path('settings', views.settings, name='settings'),
     path('upload', views.upload, name='upload'),
+    path('delete_notification/<int:notification_id>/', delete_notification, name='delete_notification'),
     path('follow', views.follow, name='follow'),
     path('search', views.search, name='search'),
     path('profile/<str:pk>', views.profile, name='profile'),
