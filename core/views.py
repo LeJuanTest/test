@@ -167,7 +167,6 @@ def follow(request):
             # Crea una notificación utilizando el perfil del usuario que sigue
             notification_text = f'{follower} is now following you.'
             Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now(), follower_profile=follower_profile)
-
             return redirect('/profile/'+user)
     else:
         return redirect('/')
