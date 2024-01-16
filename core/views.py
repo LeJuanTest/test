@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from .models import Profile, Post, LikePost, FollowersCount, Notification
@@ -9,6 +9,12 @@ from itertools import chain
 import random
 
 # Create your views here.
+
+from django.db.models import Q
+
+from django.db.models import Q
+
+from django.db.models import Q
 
 @login_required(login_url='signin')
 def index(request):
@@ -18,46 +24,29 @@ def index(request):
     # Obtener las notificaciones para el usuario actual
     notifications = Notification.objects.filter(user=request.user).select_related('follower_profile').order_by('-timestamp')[:5]
 
-    user_following_list = []
-    feed = []
+    # Obtener la lista de usuarios a los que sigue el usuario actual
+    user_following_list = FollowersCount.objects.filter(follower=request.user.username).values_list('user', flat=True)
 
-    user_following = FollowersCount.objects.filter(follower=request.user.username)
-
-    for users in user_following:
-        user_following_list.append(users.user)
-
-    for usernames in user_following_list:
-        feed_lists = Post.objects.filter(user=usernames)
-        feed.append(feed_lists)
-
-    feed_list = Post.objects.all()
+    # Obtener todas las publicaciones, excluyendo las propias
+    feed_list = Post.objects.exclude(user=request.user.username)
 
     # user suggestion starts
     all_users = User.objects.all()
-    user_following_all = []
+    user_following_all = User.objects.filter(username__in=user_following_list)
 
-    for user in user_following:
-        user_list = User.objects.get(username=user.user)
-        user_following_all.append(user_list)
-    
-    new_suggestions_list = [x for x in list(all_users) if (x not in list(user_following_all))]
+    new_suggestions_list = all_users.exclude(username__in=user_following_all.values_list('username', flat=True))
     current_user = User.objects.filter(username=request.user.username)
-    final_suggestions_list = [x for x in list(new_suggestions_list) if ( x not in list(current_user))]
+    final_suggestions_list = new_suggestions_list.exclude(username__in=current_user.values_list('username', flat=True))
+    final_suggestions_list = list(final_suggestions_list)  # Convertir a lista
     random.shuffle(final_suggestions_list)
 
-    username_profile = []
-    username_profile_list = []
+    username_profile_list = list(Profile.objects.filter(user__in=final_suggestions_list))
 
-    for users in final_suggestions_list:
-        username_profile.append(users.id)
-
-    for ids in username_profile:
-        profile_lists = Profile.objects.filter(id_user=ids)
-        username_profile_list.append(profile_lists)
-
-    suggestions_username_profile_list = list(chain(*username_profile_list))
+    suggestions_username_profile_list = username_profile_list
 
     return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'notifications': notifications})
+
+
 
 @login_required(login_url='signin')
 def upload(request):
@@ -145,31 +134,49 @@ def profile(request, pk):
     }
     return render(request, 'profile.html', context)
 
+
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from datetime import datetime
+
 @login_required(login_url='signin')
 def follow(request):
     if request.method == 'POST':
-        follower = request.POST['follower']
-        user = request.POST['user']
+        try:
+            # Obtener el valor de 'follower' y 'user' de la solicitud POST
+            follower = request.POST.get('follower', None)
+            user = request.POST.get('user', None)
 
-        # Verifica si el seguidor ya sigue al usuario
-        if FollowersCount.objects.filter(follower=follower, user=user).first():
-            delete_follower = FollowersCount.objects.get(follower=follower, user=user)
-            delete_follower.delete()
-            return redirect('/profile/'+user)
-        else:
-            # Crea una nueva entrada en FollowersCount
-            new_follower = FollowersCount.objects.create(follower=follower, user=user)
-            new_follower.save()
+            # Verificar si 'follower' y 'user' están presentes en la solicitud POST
+            if follower is not None and user is not None:
+                # Verifica si el seguidor ya sigue al usuario
+                if FollowersCount.objects.filter(follower=follower, user=user).first():
+                    delete_follower = FollowersCount.objects.get(follower=follower, user=user)
+                    delete_follower.delete()
+                    return redirect('/profile/'+user)
+                else:
+                    # Crea una nueva entrada en FollowersCount
+                    new_follower = FollowersCount.objects.create(follower=follower, user=user)
+                    new_follower.save()
 
-            # Obtiene el perfil del usuario que sigue
-            follower_profile = Profile.objects.get(user__username=follower)
+                    # Obtiene el perfil del usuario que sigue
+                    follower_profile = Profile.objects.get(user__username=follower)
 
-            # Crea una notificación utilizando el perfil del usuario que sigue
-            notification_text = f'{follower} is now following you.'
-            Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now(), follower_profile=follower_profile)
-            return redirect('/profile/'+user)
+                    # Crea una notificación utilizando el perfil del usuario que sigue
+                    notification_text = f'{follower} is now following you.'
+                    Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now(), follower_profile=follower_profile)
+                    return redirect('/profile/'+user)
+            else:
+                # Devolver una respuesta de error BadRequest si 'follower' o 'user' no están presentes en la solicitud POST
+                return JsonResponse({'status': 'error', 'message': "Missing 'follower' or 'user' in POST data"}, status=400)
+        except Exception as e:
+            # Devuelve una respuesta JSON de error con detalles del error
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     else:
         return redirect('/')
+
+
+
 
 
 
