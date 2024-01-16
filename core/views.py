@@ -30,7 +30,7 @@ def index(request):
         feed_lists = Post.objects.filter(user=usernames)
         feed.append(feed_lists)
 
-    feed_list = list(chain(*feed))
+    feed_list = Post.objects.all()
 
     # user suggestion starts
     all_users = User.objects.all()
