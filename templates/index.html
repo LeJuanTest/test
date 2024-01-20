@@ -457,25 +457,25 @@
     
     <script>
 function toggleFollow(postUser) {
-    // Enviar la solicitud POST
+    // POST
     fetch('/follow', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': '{{ csrf_token }}' // Asegúrate de incluir el token CSRF
+            'X-CSRFToken': '{{ csrf_token }}'
         },
         body: `follower={{ request.user.username }}&user=${postUser}`
     })
     .then(response => {
         if (response.ok) {
-            // Manejar la respuesta si es exitosa
-            location.reload(); // Recargar la página o realizar otras acciones según tu flujo
+            // Handle the response if successful
+            location.reload(); // Reload the page or perform other actions according to your flow
         } else {
-            console.error('Error en la solicitud POST:', response.statusText);
+            console.error('Error in the POST request:', response.statusText);
         }
     })
     .catch(error => {
-        console.error('Error en la solicitud POST:', error);
+        console.error('Error in the POST request:', error);
     });
 }
 

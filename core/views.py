@@ -21,13 +21,13 @@ def index(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
 
-    # Obtener las notificaciones para el usuario actual
+    # Get notifications for the current user
     notifications = Notification.objects.filter(user=request.user).select_related('follower_profile').order_by('-timestamp')[:5]
 
-    # Obtener la lista de usuarios a los que sigue el usuario actual
+    # Get the list of users followed by the current user
     user_following_list = FollowersCount.objects.filter(follower=request.user.username).values_list('user', flat=True)
 
-    # Obtener todas las publicaciones, excluyendo las propias
+    # Obtain all publications, excluding your own
     feed_list = Post.objects.exclude(user=request.user.username)
 
     # user suggestion starts
@@ -37,7 +37,7 @@ def index(request):
     new_suggestions_list = all_users.exclude(username__in=user_following_all.values_list('username', flat=True))
     current_user = User.objects.filter(username=request.user.username)
     final_suggestions_list = new_suggestions_list.exclude(username__in=current_user.values_list('username', flat=True))
-    final_suggestions_list = list(final_suggestions_list)  # Convertir a lista
+    final_suggestions_list = list(final_suggestions_list)  # Convert to list
     random.shuffle(final_suggestions_list)
 
     username_profile_list = list(Profile.objects.filter(user__in=final_suggestions_list))
@@ -143,43 +143,37 @@ from datetime import datetime
 def follow(request):
     if request.method == 'POST':
         try:
-            # Obtener el valor de 'follower' y 'user' de la solicitud POST
+            # Get the value of 'follower' and 'user' from the POST request
             follower = request.POST.get('follower', None)
             user = request.POST.get('user', None)
 
-            # Verificar si 'follower' y 'user' están presentes en la solicitud POST
+            # Verify if 'follower' and 'user' are present in the POST request
             if follower is not None and user is not None:
-                # Verifica si el seguidor ya sigue al usuario
+                # Checks if the follower already follows the user
                 if FollowersCount.objects.filter(follower=follower, user=user).first():
                     delete_follower = FollowersCount.objects.get(follower=follower, user=user)
                     delete_follower.delete()
                     return redirect('/profile/'+user)
                 else:
-                    # Crea una nueva entrada en FollowersCount
+                    # Create a new FollowersCount entry
                     new_follower = FollowersCount.objects.create(follower=follower, user=user)
                     new_follower.save()
 
-                    # Obtiene el perfil del usuario que sigue
+                    # Gets the profile of the following user
                     follower_profile = Profile.objects.get(user__username=follower)
 
-                    # Crea una notificación utilizando el perfil del usuario que sigue
+                    # Creates a notification using the following user profile
                     notification_text = f'{follower} is now following you.'
                     Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now(), follower_profile=follower_profile)
                     return redirect('/profile/'+user)
             else:
-                # Devolver una respuesta de error BadRequest si 'follower' o 'user' no están presentes en la solicitud POST
+                # Return BadRequest error response if 'follower' or 'user' is not present in the POST request
                 return JsonResponse({'status': 'error', 'message': "Missing 'follower' or 'user' in POST data"}, status=400)
         except Exception as e:
-            # Devuelve una respuesta JSON de error con detalles del error
+            # Returns an error JSON response with error details
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     else:
         return redirect('/')
-
-
-
-
-
-
 
 @login_required(login_url='signin')
 def settings(request):
