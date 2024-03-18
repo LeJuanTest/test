@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from .models import Profile, Post, LikePost, FollowersCount, Notification
+from .models import Profile, Post, LikePost, FollowersCount, Notification, Comment
 from itertools import chain
 import random
 
@@ -29,7 +29,10 @@ def index(request):
 
     # Obtain all publications, excluding your own
     feed_list = Post.objects.exclude(user=request.user.username)
-
+    for post in feed_list:
+        for comment in post.comments.all():
+            comment.comments_profile = Profile.objects.get(user=comment.user)
+            comment.save()
     # user suggestion starts
     all_users = User.objects.all()
     user_following_all = User.objects.filter(username__in=user_following_list)
@@ -43,10 +46,48 @@ def index(request):
     username_profile_list = list(Profile.objects.filter(user__in=final_suggestions_list))
 
     suggestions_username_profile_list = username_profile_list
+    final_user_following_list = user_following_list
 
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'notifications': notifications})
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'final_user_following_list': final_user_following_list[:4], 'notifications': notifications})
 
-
+@login_required(login_url='signin')
+def comment_post(request, post_id):
+    if request.method == 'POST':
+        # Obtener la publicación a la que se está comentando
+        post = get_object_or_404(Post, id=post_id)
+        
+        # Obtener el comentario del formulario
+        comment_text = request.POST.get('comment')
+        
+        # Crear el comentario y asociarlo con la publicación
+        new_comment = Comment.objects.create(post=post, user=request.user, text=comment_text)
+        
+        # Asignar el perfil del usuario que realizó el comentario al campo comments_profile
+        new_comment.comments_profile = Profile.objects.get(user=request.user)
+        
+        # Guardar el comentario
+        new_comment.save()
+        
+        # Redireccionar a la página de inicio u otra página después de comentar
+        return redirect('/')
+    else:
+        # Manejar el caso de acceso directo a la URL sin enviar un formulario POST
+        return redirect('/')
+    
+def delete_comment(request, comment_id):
+    # Obtener el comentario a eliminar
+    comment = get_object_or_404(Comment, id=comment_id)
+    
+    # Verificar si el usuario actual es el autor del comentario
+    if comment.user == request.user:
+        # Eliminar el comentario
+        comment.delete()
+        # Redireccionar a la página principal o a donde sea apropiado después de eliminar el comentario
+        return redirect('/')
+    else:
+        # Manejar el caso en que el usuario no esté autorizado para eliminar el comentario
+        # Puedes mostrar un mensaje de error o redireccionar a otra página
+        return redirect('/')
 
 @login_required(login_url='signin')
 def upload(request):
@@ -116,9 +157,9 @@ def profile(request, pk):
     user = pk
 
     if FollowersCount.objects.filter(follower=follower, user=user).first():
-        button_text = 'Unfollow'
+        button_text = 'Dejar de seguir'
     else:
-        button_text = 'Follow'
+        button_text = 'Seguir'
 
     user_followers = len(FollowersCount.objects.filter(user=pk))
     user_following = len(FollowersCount.objects.filter(follower=pk))

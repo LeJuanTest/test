@@ -17,6 +17,16 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+class Comment(models.Model):
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    comments_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return f'Comment by {self.user.username} on {self.post}'
+
 class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.CharField(max_length=100)
@@ -48,7 +58,6 @@ class Notification(models.Model):
     text = models.CharField(max_length=255)
     timestamp = models.DateTimeField(auto_now_add=True)
     follower_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
-
 
 class Video(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -19,28 +19,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
-<body>
 
+<body>
             <header>
                 <div class="header_inner">
-                    <form action="/search" method="POST">
+                    <form action="/search" method="POST" onsubmit="return validateSearch()">
                     {% csrf_token %}
                     <div class="left-side">
                         <!-- Logo -->
                         <div id="logo" class=" uk-hidden@s">
                             <a href="home.html">
-                                <b><h1 style="text-transform: uppercase;">Social Book</h1></b>
+                                <b><h1 style="text-transform: uppercase;"></h1></b>
                             </a>
                         </div>
 
-                        <!--<div class="triger" uk-toggle="target: #wrapper ; cls: sidebar-active">
-                            <i class="uil-bars"></i>
-                        </div>-->
-
-                        <!-- <div class="header_search"> -->
-                            <input type="text" name="username" placeholder="Search for username..">&nbsp; &nbsp;
+                            <input type="text" name="username" minlength="1" maxlength="50" required placeholder="Busqueda">&nbsp; &nbsp;
                             <button type="submit"><i class="fa fa-search fa-1x"></i></button>
-                        <!-- </div> -->
 
                     </div>
                     </form>
@@ -49,14 +43,14 @@
                         <a href="#"
                         class="bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shado text-white">
                         <ion-icon name="add-circle" class="-mb-1
-                         mr-1 opacity-90 text-xl uilus-circle"></ion-icon> Upload Pics
+                         mr-1 opacity-90 text-xl uilus-circle"></ion-icon> Subir archivos
                     </a>
                      <!-- upload dropdown box -->
                     <div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small" class="header_dropdown">
 
                         <!-- notivication header -->
                         <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
-                            <h4>Upload Pics</h4>
+                            <h4>Subir archivos</h4>
                         </div>
 
                         <!-- notification contents -->
@@ -76,11 +70,11 @@
                                     <br>
                                     <div>
                                         <input type="file" name="image_upload" id="fileInput" style="display: none;" onchange="updateFileName()">
-                                        <label for="fileInput" class="button bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white  justify-center lg:block h-10 px-4 py-2 rounded shado text-white">Choose file</label>
+                                        <label for="fileInput" class="button bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white  justify-center lg:block h-10 px-4 py-2 rounded shado text-white">Elegir archivo</label>
                                         <span id="fileName" style="margin-left: 10px;"></span>
-                                        <textarea class="button soft-warning small" name="caption" placeholder="caption..."></textarea>
+                                        <textarea class="button soft-warning small" name="caption" placeholder="Agregar texto.."></textarea>
                                         <br>
-                                        <button class="button bg-blue-700" type="submit">Upload</button>
+                                        <button class="button bg-blue-700" type="submit">Subir</button>
                                     </div>
                                 </form>
                                 
@@ -116,9 +110,7 @@
                             </div>
 
                         </div>
-                        <div class="px-4 py-3 -mx-5 -mb-4 mt-5 border-t text-sm">
-                            Your Image size Must be Maximum 999MB
-                        </div>
+                
                     </div>
 
                         
@@ -131,7 +123,7 @@
                             </svg>
                         </a>
                         <div uk-drop="mode: click;offset: 4" class="header_dropdown">
-                            <h4 class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">Notification </h4>
+                            <h4 class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">Notificaciones </h4>
                             <ul class="dropdown_scrollbar" data-simplebar>
                                 {% for notification in notifications %}
                                     <li id="notification-{{ notification.id }}">
@@ -147,7 +139,7 @@
                                                     <br>
                                                     <span class="text-link">{{ notification.text }}</span>
                                                 </p>
-                                                <span class="time-ago">{{ notification.timestamp|timesince }} ago</span>
+                                                <span class="time-ago">Hace {{ notification.timestamp|timesince }} </span>
                                             </div>
                                             <!-- X button -->
                                             <button class="delete-button" onclick="deleteNotification('{{ notification.id }}')">
@@ -159,7 +151,7 @@
                                     </li>
                                 {% endfor %}
                             </ul>
-                            <a href="#" class="see-all">See all (In configuration)</a>
+                            <a href="#" class="see-all">Ver todo (Mantenimiento)</a>
                         </div>
 
                         <script>
@@ -187,7 +179,6 @@
 
 
                         <!-- Messages -->
-
                         <!-- <a href="#" class="header-links-item">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="0.5em" height="0.5em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></g></svg>
                         </a>
@@ -206,93 +197,49 @@
                                         </div>
                                     </a>
                                 </li>
-                                
-
-
                             </ul>
                             <a href="#" class="see-all">See all</a>
                         </div> -->
 
                         <!-- profile -->
-
                         <a href="#">
                             <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
                         </a>
                         <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                             <ul>
-                                <li><a href="/profile/{{user.username}}"> Account </a> </li>
-                                <li><a href="logout"> Log Out</a></li>
+                                <li><a href="/profile/{{user.username}}"> Cuenta </a> </li>
+                                <li><a href="logout"> Salir</a></li>
                             </ul>
                         </div>
-
                     </div>
                 </div>
             </header>
-
             <div class="container m-auto">
-
-                <!--<h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> Feed </h1>--->
-
                 <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
-
                     <!-- left sidebar-->
                     <div class="space-y-5 flex-shrink-0 lg:w-7/12">
-
-                        <!-- post 1-->
-
                         {% for post in posts reversed %}
                         <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
-    
                             <!-- post header-->
                             <div class="flex justify-between items-center px-4 py-3">
                                 <div class="flex flex-1 items-center space-x-4">
-                                    <!-- <a href="#">
-                                        <div class="bg-gradient-to-tr from-yellow-600 to-pink-600 p-0.5 rounded-full">  
-                                            <img src="{% static 'assets/images/avatars/avatar-2.jpg' %}" class="bg-gray-200 border border-white rounded-full w-8 h-8">
-                                        </div>
-                                    </a> -->
                                     <span class="block font-semibold "><a href="/profile/{{post.user}}">@{{post.user}}</a></span>
                                 </div>
                               <div>
 
                                 <a href="#"> <i class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 "></i> </a>
                                 <div class="bg-black w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100  " uk-drop="mode: hover;pos: top-right">
-                    
                                     <ul class="space-y-1">
-                                        <!-- Dentro del código HTML existente -->
                                     <li> 
-                                        <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
-                                            <i class="uil-share-alt mr-1"></i> Share
-                                        </a> 
-                                    </li>
-                                    <li> 
-                                        <button id="followButton" class="flex items-center px-3 py-2 hover:bg-white-200 hover:text-white-800 rounded-md" onclick="toggleFollow('{{ post.user }}')">
-                                            {% if user_profile.user.username != request.user.username %}
-                                                {% if user_profile.user.username in user_following_list %}
-                                                    <i class="uil-check-circle mr-1"></i> Following
-                                                {% else %}
-                                                    <i class="uil-user-plus mr-1"></i> Follow
-                                                {% endif %}
+                                        <button id="followButton_{{ post.user }}" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md" onclick="toggleFollow('{{ post.user }}')">
+                                            {% if post.user in final_user_following_list %}
+                                                <i class="uil-check-circle mr-1"></i> Dejar de seguir
+                                            {% else %}
+                                                <i class="uil-user-plus mr-1"></i> Seguir
                                             {% endif %}
                                         </button>
-                                    </li>
-                                    
-                                      <!-- <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
-                                           <i class="uil-comment-slash mr-1"></i>   Disable comments
-                                          </a> 
-                                      </li>  -->
-                                      <!-- <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
-                                           <i class="uil-favorite mr-1"></i>  Add favorites 
-                                          </a> 
-                                      </li> -->
-                                      <!-- <li>
-                                        <hr class="-mx-2 my-2 ">
-                                      </li> -->
-                                     
+                                    </li>                                                    
                                     </ul>
-                                
                                 </div>
                               </div>
                             </div>
@@ -302,10 +249,9 @@
                                     <img src="{{post.image.url}}" alt="">
                                 </a>
                             </div>
-                            
+
     
                             <div class="py-3 px-4 space-y-3"> 
-                               
                                 <div class="flex space-x-4 lg:font-bold">
                                     <a href="/like-post?post_id={{post.id}}" class="flex items-center space-x-2">
                                         <div class="p-2 rounded-full text-black">
@@ -315,94 +261,80 @@
                                             {% if post.no_of_likes == 0 %}
                                             <p>No likes</p>
                                             {% elif post.no_of_likes == 1 %}
-                                            <p>Liked by {{post.no_of_likes}} person</p>
+                                            <p>{{post.no_of_likes}} dio like</p>
                                             {% else %}
-                                            <p>Liked by {{post.no_of_likes}} people</p>
+                                            <p>{{post.no_of_likes}} han dado like</p>
                                             {% endif %}
                                         </div>
-                                        
                                     </a>
-                                    <!-- <a href="#" class="flex items-center space-x-2">
-                                        <div class="p-2 rounded-full text-black">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="25" height="25" class="">
-                                                <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        
-                                    </a> -->
                                     <a href="{{post.image.url}}" class="flex items-center space-x-2 flex-1 justify-end" download>
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="25" height="25" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2a.5.5 0 0 0-.354.854l2.5 2.5a.5.5 0 0 0 .708 0l2.5-2.5A.5.5 0 0 0 10.5 7.5h-2v-6z"/></g></svg>
                                         
                                     </a>
                                 </div>
-                                <!-- <div class="flex items-center space-x-3"> 
-                                    <div class="flex items-center">
-                                        <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
-                                        <img src="{% static 'assets/images/avatars/avatar-4.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white  -ml-2">
-                                        <img src="{% static 'assets/images/avatars/avatar-2.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white  -ml-2">
-                                    </div>
-                                    <div class="">
-                                        Liked <strong> taiye</strong> and <strong> 209 Others </strong>
-                                    </div>
-                                </div> -->
 
                                 <p>
                                     <a href="/profile/{{post.user}}"><strong>{{post.user}}</strong></a> {{post.caption}}
                                 </p>
 
-                                <!-- <div class="border-t pt-4 space-y-4 ">
-                                    <div class="flex">
-                                        <div class="w-10 h-10 rounded-full relative flex-shrink-0">
-                                            <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="" class="absolute h-full rounded-full w-full">
-                                        </div>
-                                        <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 h-full relative lg:ml-5 ml-2 lg:mr-20   ">
-                                            <p class="leading-6">Y'all like billie eillish? <urna class="i uil-heart"></urna> <i
-                                                    class="uil-grin-tongue-wink"> </i> </p>
-                                            <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 "></div>
-                                        </div>
-                                    </div>
-                                    <div class="flex">
-                                        <div class="w-10 h-10 rounded-full relative flex-shrink-0">
-                                            <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="" class="absolute h-full rounded-full w-full">
-                                        </div>
-                                        <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 h-full relative lg:ml-5 ml-2 lg:mr-20   ">
-                                            <p class="leading-6">She's my favourite <i class="uil-grin-tongue-wink-alt"></i>
-                                            </p>
-                                            <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 "></div>
-                                        </div>
-                                    </div>
-                                </div> -->
+                                <!-- comment -->
+                                <div class="bg-gray-300 rounded-full rounded-md relative">
+                                    <!-- Formulario de comentarios -->
+                                    <form id="commentForm_{{ post.id }}" action="{% url 'comment_post' post.id %}" method="post" onsubmit="return validateComment('{{ post.id }}')">
+                                        {% csrf_token %}
+                                        <input id="comment_{{ post.id }}" type="text" name="comment" placeholder="Comenta" minlength="1" maxlength="180" required class="bg-transparent max-h-10 shadow-none" oninput="countChars(this, document.getElementById('charCount_{{ post.id }}'))">
+                                        <span style="margin-left: 500px; margin-top: 90px" id="charCount_{{ post.id }}">0</span>/180
+                                    </form>
+                                </div>
 
-                                <!-- <div class="bg-gray-100 bg-gray-100 rounded-full rounded-md relative ">
-                                    <input type="text" placeholder="post a comment" class="bg-transparent max-h-10 shadow-none">
-                                    <div class="absolute bottom-0 flex h-full items-center right-0 right-3 text-xl space-x-2">
-                                        <a href="#"> <i class="uil-image"></i></a>
-                                        <a href="#"> <i class="uil-video"></i></a>
-                                    </div>
-                                </div> -->
-    
+                                <div class="bg-black-100 bg-black-100 rounded-full rounded-md relative">
+                                    {% for comment in post.comments.all %}
+                                        <div class="comment">
+                                            <div class="flex items-center space-x-2">
+                                                <!-- Avatar del usuario -->
+                                                <img src="{{ comment.comments_profile.profileimg.url }}" alt="Avatar2" class="w-8 h-8 rounded-full">
+                                                <div>
+                                                    <div class="flex items-center space-x-2"> <!-- Contenedor para el nombre de usuario y la fecha -->
+                                                        <!-- Nombre de usuario -->
+                                                        <p><strong>{{ comment.user.username }}</strong></p>
+                                                        <!-- Fecha de creación del comentario -->
+                                                        <p style="font-size: 12px; color: #999;">{{ comment.created_at }}</p>
+
+                                                        {% if comment.user == request.user %}
+                                                <form action="{% url 'delete_comment' comment.id %}" method="post" class="delete-comment-form" style="margin-right: 700;">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 240px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
+                                                </form>
+                                            {% endif %}
+                                                    </div>
+
+                                                    <!-- Div editable para comentarios -->
+                                                    <div id="comment_text" contenteditable="false" 
+                                                    style="
+                                                    
+                                                    width: 430px;
+                                                    overflow: hidden; 
+                                                    word-wrap: break-word;">
+                                                                <p>{{ comment.text }}</p>
+                                                            </div>
+
+                                                    </div>
+                                                </div>                                                
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             </div>
-    
                         </div>
                         {% endfor %}
-    
-                        
-
-
-                    </div>
 
                     <!-- right sidebar-->
-                    <div class="lg:w-5/12">
-
+                    <div class="lg:w-5/12" style="position: sticky; top: 20px;">
                         <div class="bg-white  shadow-md rounded-md overflow-hidden">
-
-                            <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 ">
-                                <h2 class="font-semibold text-lg">Users You Can Follow</h2>
-                                <!-- <a href="#"> Refresh</a> -->
+                            <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 " style="position: sticky">
+                                <h2 class="font-semibold text-lg">Personas que puedes seguir</h2>
                             </div>
-                           
                             <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
-
                                 {% for suggestion in suggestions_username_profile_list %}
                                 <div class="flex items-center justify-between py-3">
                                     <div class="flex flex-1 items-center space-x-4">
@@ -414,35 +346,16 @@
                                             <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
                                         </div>
                                     </div>
-                                    
-                                    <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
+                                    <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> Ver usuario </a>
                                 </div>
                                 {% endfor %}
-
                             </div>
-
                         </div>
-
-                      
-
                     </div>
-
                 </div>               
-          
-
             </div>
-
         </div>
-
     </div>
-
-
-
-
-
-
-
-
  <!-- Scripts
     ================================================== -->
     <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
@@ -450,9 +363,37 @@
     <script src="{% static 'assets/js/uikit.js' %}"></script>
     <script src="{% static 'assets/js/simplebar.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
-
-
     <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+    <script>
+    function validateSearch() {
+        var searchQuery = document.getElementsByName("username")[0].value.trim(); // Obtener el valor del campo de búsqueda y eliminar espacios en blanco al principio y al final
+        if (searchQuery.length === 0 || searchQuery.match(/^\s*$/)) { // Verificar si el campo de búsqueda está vacío o contiene solo espacios en blanco
+            alert("Por favor, ingresa al menos una letra para realizar la búsqueda."); // Mostrar un mensaje de alerta si el campo de búsqueda está vacío
+            return false; // Evitar que se envíe el formulario
+        }
+        return true; // Permitir el envío del formulario si el campo de búsqueda contiene al menos una letra
+    }
+</script>
+<script>
+    function validateComment(postId) {
+        var commentInput = document.getElementById("comment_" + postId); // Obtener el campo de entrada de comentarios específico para este post
+        var comment = commentInput.value.trim(); // Obtener el valor del comentario y quitar espacios en blanco al inicio y al final
+        if (comment.length === 0 || comment.match(/^\s*$/)) { // Verificar si el comentario está vacío o contiene solo espacios en blanco
+            alert("Por favor, escribe algo antes de enviar el comentario."); // Mostrar un mensaje de alerta si el comentario está vacío
+            return false; // Evitar que se envíe el formulario
+        }
+        return true; // Permitir el envío del formulario si el comentario contiene al menos una letra
+    }
+</script>
+<script>
+    function countChars(inputElement, charCountElement) {
+        var maxLength = 180; // Máximo número de caracteres permitidos
+        var currentLength = inputElement.value.length; // Número actual de caracteres en el campo de entrada
+        var remaining = maxLength - currentLength; // Calcular el número de caracteres restantes
+        var count = maxLength - remaining; // Calcular el número de caracteres ingresados
+        charCountElement.textContent = count; // Actualizar el contador de caracteres ingresados
+    }
+</script>
 
     
     <script>
@@ -478,9 +419,7 @@ function toggleFollow(postUser) {
         console.error('Error in the POST request:', error);
     });
 }
-
     </script>
+
 </body>
-
-
 </html>
