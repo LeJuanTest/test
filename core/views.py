@@ -7,6 +7,8 @@ from datetime import datetime
 from .models import Profile, Post, LikePost, FollowersCount, Notification, Comment
 from itertools import chain
 import random
+from uuid import UUID
+
 
 # Create your views here.
 
@@ -98,10 +100,22 @@ def upload(request):
         caption = request.POST['caption']
 
         new_post = Post.objects.create(user=user, image=image, caption=caption)
+        new_post.post_profile = Profile.objects.get(user=request.user)
         new_post.save()
 
         return redirect('/')
     else:
+        return redirect('/')
+
+@login_required(login_url='signin')
+def delete_post(request, post_id=None):
+    # Obtener el post usando el ID proporcionado
+    post_to_delete = get_object_or_404(Post, id=post_id)
+    if request.user.username == post_to_delete.user:
+        post_to_delete.delete()
+        return redirect('/')  # Ajusta 'home' al nombre de tu URL de inicio
+    else:
+        # Si el usuario no es el propietario del post, mostrar un mensaje de error o redirigir a otra página
         return redirect('/')
 
 @login_required(login_url='signin')
@@ -175,11 +189,6 @@ def profile(request, pk):
     }
     return render(request, 'profile.html', context)
 
-
-from django.http import JsonResponse
-from django.shortcuts import redirect
-from datetime import datetime
-
 @login_required(login_url='signin')
 def follow(request):
     if request.method == 'POST':
@@ -204,7 +213,7 @@ def follow(request):
                     follower_profile = Profile.objects.get(user__username=follower)
 
                     # Creates a notification using the following user profile
-                    notification_text = f'{follower} is now following you.'
+                    notification_text = f'{follower} te sigue.'
                     Notification.objects.create(user=User.objects.get(username=user), text=notification_text, timestamp=datetime.now(), follower_profile=follower_profile)
                     return redirect('/profile/'+user)
             else:

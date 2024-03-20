@@ -31,6 +31,7 @@ class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     user = models.CharField(max_length=100)
     image = models.ImageField(upload_to='post_images')
+    post_profile = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
     caption = models.TextField()
     video_url = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)

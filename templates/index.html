@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'favicon.png' %}" rel="icon" type="image/png">
-    <title>Home</title>
+    <title>Principal</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
@@ -44,7 +44,7 @@
                      <!-- upload dropdown box -->
                     <div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small" class="header_dropdown">
 
-                        <!-- notivication header -->
+                        <!-- notification header -->
                         <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
                             <h4>Subir archivos</h4>
                         </div>
@@ -172,12 +172,13 @@
             <!-- posts -->
             <div class="container mx-auto">
                 <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
-                    <div class="space-y-5 flex-shrink-0 lg:w-7/12" style="position: sticky">
+                    <div class="space-y-5 flex-shrink-0 lg:w-7/12" style="position: sticky;margin-bottom: 40px;">
                         {% for post in posts reversed %}
                         <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
                             <!-- post header-->
                             <div class="flex justify-between items-center px-4 py-3">
                                 <div class="flex flex-1 items-center space-x-4">
+                                    <img src="{{ post.post_profile.profileimg.url }}" alt="Avatar_profile" class="w-8 h-8 rounded-full">
                                     <span class="block font-semibold "><a href="/profile/{{post.user}}">@{{post.user}}</a></span>
                                 </div>
                               <div>
@@ -186,13 +187,27 @@
                                 <div class="bg-black w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100  " uk-drop="mode: hover;pos: top-right">
                                     <ul class="space-y-1">
                                     <li> 
+                                        {% if post.user == request.user.username %}
+                                        <i class="uil-check-circle mr-1"></i> No puedes seguirte a ti mismo
+                                        {% else %}
                                         <button id="followButton_{{ post.user }}" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md" onclick="toggleFollow('{{ post.user }}')">
-                                            {% if post.user in final_user_following_list %}
-                                                <i class="uil-check-circle mr-1"></i> Dejar de seguir
-                                            {% else %}
+                                            {% if post.user not in final_user_following_list %}
                                                 <i class="uil-user-plus mr-1"></i> Seguir
+                                            {% else %}
+                                                <i class="uil-check-circle mr-1"></i> Dejar de seguir
                                             {% endif %}
                                         </button>
+                                    {% endif %}
+                                    <!-- Borrar post -->
+                                    {% if post.user == request.user.username %}
+                                    <form action="{% url 'delete_post' post.id %}" method="post" class="delete-post-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="delete-post-btn hover:bg-gray-200 rounded-full p-2 transition -mr-1">
+                                            <span><i class="uil-trash-alt mr-1"></i> Eliminar Post</span>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+
                                     </li>                                                    
                                     </ul>
                                 </div>
@@ -205,6 +220,11 @@
                                     <img src="{{post.image.url}}" alt="" style="display: block; margin: auto; max-width: 100%; max-height: 100%; width: auto; height: auto;">
                                 </a>
                             </div>
+                            
+                                <!-- Fecha (día y mes) -->
+                                <div class="px-4 py-2">
+                                    <p class="text-sm text-gray-500">{{ post.created_at|date:"d M" }}</p>
+                                </div>
                             
                              <!-- Likes -->
                             <div class="py-3 px-4 space-y-3"> 
@@ -328,7 +348,7 @@
                     </a>
                     <div class="flex flex-col">
                         <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
-                        <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
+                        <span class="block capitalize text-sm" style="width: 200px; overflow: hidden; word-wrap: break-word;"> {{suggestion.bio}} </span>
                     </div>
                 </div>
                 <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600">Ver usuario</a>
@@ -402,6 +422,13 @@
         var remaining = maxLength - currentLength; // Calcular el número de caracteres restantes
         var count = maxLength - remaining; // Calcular el número de caracteres ingresados
         charCountElement.textContent = count; // Actualizar el contador de caracteres ingresados
+    }
+</script>
+<script>
+    function deletePost(postId) {
+        if (confirm("¿Estás seguro de que quieres eliminar este post?")) {
+            document.getElementById('deletePostForm_' + postId).submit();
+        }
     }
 </script>
 
