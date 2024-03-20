@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 ROOT_URLCONF = 'social_book.urls'
 
@@ -130,7 +131,7 @@ APPEND_SLASH=False
 
 AWS_ACCESS_KEY_ID = 'AKIAVRUVVLV7JVWSP3XL'
 AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'socialmedia-mountain'
+AWS_STORAGE_BUCKET_NAME = 'cacolombia'
 AWS_S3_SIGNATURE_VERSION ='s3v4' 
 AWS_S3_REGION_NAME = 'us-west-2'  # Por ejemplo, 'us-east-1'
 AWS_QUERYSTRING_AUTH = False

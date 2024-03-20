@@ -2,8 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,11 +13,9 @@
     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 </head>
-
-
 <body>
             <header>
                 <div class="header_inner">
@@ -53,7 +49,7 @@
                             <h4>Subir archivos</h4>
                         </div>
 
-                        <!-- notification contents -->
+                        <!-- Uploading -->
                         <div class="flex justify-center flex-center text-center">
 
                             <div class="flex flex-col choose-upload text-center">
@@ -65,9 +61,8 @@
                                     </svg>
                                 </div>
 
-                                <form action="upload" method="POST" enctype="multipart/form-data">
+                                <form action="upload" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                                     {% csrf_token %}
-                                    <br>
                                     <div>
                                         <input type="file" name="image_upload" id="fileInput" style="display: none;" onchange="updateFileName()">
                                         <label for="fileInput" class="button bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white  justify-center lg:block h-10 px-4 py-2 rounded shado text-white">Elegir archivo</label>
@@ -79,15 +74,21 @@
                                 </form>
                                 
                                 <script>
+                                    function validateForm() {
+                                        var fileInput = document.getElementById('fileInput');
+                                        if (fileInput.files.length === 0) {
+                                            alert('Por favor, selecciona al menos un archivo.');
+                                            return false;
+                                        }
+                                        return true;
+                                    }
+                                </script>
+                                <script>
                                     function updateFileName() {
                                         var fileName = document.getElementById('fileInput').files[0].name;
                                         document.getElementById('fileName').innerHTML = fileName;
                                     }
                                 </script>
-
-                                <!-- <a href="#" class="uk-text-muted mt-3 uk-link"
-                                    uk-toggle="target: .choose-upload ;  animation: uk-animation-slide-right-small, uk-animation-slide-left-medium; queued: true">
-                                    Or Import Video </a> -->
                             </div>
 
                             <div class="uk-flex uk-flex-column choose-upload" hidden>
@@ -154,53 +155,6 @@
                             <a href="#" class="see-all">Ver todo (Mantenimiento)</a>
                         </div>
 
-                        <script>
-                            function deleteNotification(notificationId) {       
-                                fetch(`/delete_notification/${notificationId}/`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRFToken': '{{ csrf_token }}',
-                                    },
-                                })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error('Network response was not ok');
-                                    }
-                                    const notificationElement = document.getElementById(`notification-${notificationId}`);
-                                    if (notificationElement) {
-                                        notificationElement.remove();
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('There was a problem with the fetch operation:', error);
-                                });
-                            }
-                        </script>
-
-
-                        <!-- Messages -->
-                        <!-- <a href="#" class="header-links-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="0.5em" height="0.5em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></g></svg>
-                        </a>
-                        <div uk-drop="mode: click;offset: 4" class="header_dropdown">
-                            <h4
-                                class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">
-                                Messages </h4>
-                            <ul class="dropdown_scrollbar" data-simplebar>
-                                <li>
-                                    <a href="#">
-                                        <div class="drop_avatar"> <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="">
-                                        </div>
-                                        <div class="drop_content">
-                                            <strong> Taiye </strong> <time> 6:43 PM</time>
-                                            <p> hi tomi </p>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                            <a href="#" class="see-all">See all</a>
-                        </div> -->
-
                         <!-- profile -->
                         <a href="#">
                             <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
@@ -214,10 +168,11 @@
                     </div>
                 </div>
             </header>
-            <div class="container m-auto">
+
+            <!-- posts -->
+            <div class="container mx-auto">
                 <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
-                    <!-- left sidebar-->
-                    <div class="space-y-5 flex-shrink-0 lg:w-7/12">
+                    <div class="space-y-5 flex-shrink-0 lg:w-7/12" style="position: sticky">
                         {% for post in posts reversed %}
                         <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
                             <!-- post header-->
@@ -243,14 +198,15 @@
                                 </div>
                               </div>
                             </div>
-    
+                            
+                             <!-- Post caja -->
                             <div uk-lightbox>
-                                <a href="{{post.image.url}}">  
-                                    <img src="{{post.image.url}}" alt="">
+                                <a href="{{post.image.url}}" class="uk-lightbox-image" style="display: block; margin: auto; width: 100%; height: auto; background-color: rgb(27, 27, 27);">
+                                    <img src="{{post.image.url}}" alt="" style="display: block; margin: auto; max-width: 100%; max-height: 100%; width: auto; height: auto;">
                                 </a>
                             </div>
-
-    
+                            
+                             <!-- Likes -->
                             <div class="py-3 px-4 space-y-3"> 
                                 <div class="flex space-x-4 lg:font-bold">
                                     <a href="/like-post?post_id={{post.id}}" class="flex items-center space-x-2">
@@ -269,101 +225,155 @@
                                     </a>
                                     <a href="{{post.image.url}}" class="flex items-center space-x-2 flex-1 justify-end" download>
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="25" height="25" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2a.5.5 0 0 0-.354.854l2.5 2.5a.5.5 0 0 0 .708 0l2.5-2.5A.5.5 0 0 0 10.5 7.5h-2v-6z"/></g></svg>
-                                        
                                     </a>
                                 </div>
-
                                 <p>
                                     <a href="/profile/{{post.user}}"><strong>{{post.user}}</strong></a> {{post.caption}}
                                 </p>
 
-                                <!-- comment -->
-                                <div class="bg-gray-300 rounded-full rounded-md relative">
-                                    <!-- Formulario de comentarios -->
-                                    <form id="commentForm_{{ post.id }}" action="{% url 'comment_post' post.id %}" method="post" onsubmit="return validateComment('{{ post.id }}')">
-                                        {% csrf_token %}
-                                        <input id="comment_{{ post.id }}" type="text" name="comment" placeholder="Comenta" minlength="1" maxlength="180" required class="bg-transparent max-h-10 shadow-none" oninput="countChars(this, document.getElementById('charCount_{{ post.id }}'))">
-                                        <span style="margin-left: 500px; margin-top: 90px" id="charCount_{{ post.id }}">0</span>/180
-                                    </form>
-                                </div>
+                            <!-- comment -->
+                            <div class="bg-gray-300 rounded-full rounded-md relative fixed bottom-0 left-0 right-0">
+                                <form id="commentForm_{{ post.id }}" action="{% url 'comment_post' post.id %}" method="post" onsubmit="return validateComment('{{ post.id }}')">
+                                    {% csrf_token %}
+                                    <input id="comment_{{ post.id }}" type="text" name="comment" placeholder="Comenta" minlength="1" maxlength="180" required class="bg-transparent max-h-10 shadow-none" oninput="countChars(this, document.getElementById('charCount_{{ post.id }}'))">
+                                    <span style="margin-left: 500px; margin-top: 90px; position:static" id="charCount_{{ post.id }}">0</span>/180
+                                </form>
+                            </div>
 
-                                <div class="bg-black-100 bg-black-100 rounded-full rounded-md relative">
-                                    {% for comment in post.comments.all %}
-                                        <div class="comment">
-                                            <div class="flex items-center space-x-2">
-                                                <!-- Avatar del usuario -->
-                                                <img src="{{ comment.comments_profile.profileimg.url }}" alt="Avatar2" class="w-8 h-8 rounded-full">
-                                                <div>
-                                                    <div class="flex items-center space-x-2"> <!-- Contenedor para el nombre de usuario y la fecha -->
-                                                        <!-- Nombre de usuario -->
-                                                        <p><strong>{{ comment.user.username }}</strong></p>
-                                                        <!-- Fecha de creación del comentario -->
-                                                        <p style="font-size: 12px; color: #999;">{{ comment.created_at }}</p>
-
-                                                        {% if comment.user == request.user %}
-                                                <form action="{% url 'delete_comment' comment.id %}" method="post" class="delete-comment-form" style="margin-right: 700;">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 240px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
-                                                </form>
-                                            {% endif %}
-                                                    </div>
-
-                                                    <!-- Div editable para comentarios -->
-                                                    <div id="comment_text" contenteditable="false" 
-                                                    style="
-                                                    
-                                                    width: 430px;
-                                                    overflow: hidden; 
-                                                    word-wrap: break-word;">
-                                                                <p>{{ comment.text }}</p>
-                                                            </div>
-
-                                                    </div>
-                                                </div>                                                
+                                {% for comment in post.comments.all|slice:":2" %}
+                                    <div class="comment">
+                                        <div class="flex items-center space-x-2" >
+                                            <!-- Avatar del usuario -->
+                                            <img src="{{ comment.comments_profile.profileimg.url }}" alt="Avatar2" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <div class="flex items-center space-x-2">
+                                                    <!-- Nombre de usuario -->
+                                                    <p><strong>{{ comment.user.username }}</strong></p>
+                                                    <!-- Fecha de creación del comentario -->
+                                                    <p style="font-size: 12px; color: #999;">{{ comment.created_at }}</p>
+                                                    {% if comment.user == request.user %}
+                                                        <form action="{% url 'delete_comment' comment.id %}" method="post" class="delete-comment-form" style="margin-right: 700;">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 240px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+                                                <!-- Div editable para comentarios -->
+                                                <div id="comment_text" contenteditable="false" 
+                                                style="width: 430px; overflow: hidden; word-wrap: break-word;">
+                                                    <p>{{ comment.text }}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    {% endfor %}
-                                </div>
+                                    </div>
+                                {% endfor %}
+
+                                <!-- NADA -->
+                            <!-- Ver más comentarios -->
+                            {% if post.comments.count > 2 %}
+                            <button id="showMoreCommentsBtn_{{ post.id }}" style="margin-left: 200px; margin-top: 0px;" onclick="showAllComments('{{ post.id }}')">Ver más comentarios</button>
+                            <button id="hideCommentsBtn_{{ post.id }}" style="display: none; margin-left: 200px; margin-top: 0px;" onclick="hideAllComments('{{ post.id }}')">Ocultar comentarios</button>
+                            {% endif %}
+
+                            <!-- Contenedor de comentarios oculto -->
+                            <div id="hiddenComments_{{ post.id }}" style="display: none;">
+                                {% for comment in post.comments.all|slice:"2:" %}
+                                    <div class="comment">
+                                        <div class="flex items-center space-x-2">
+                                            <!-- Avatar del usuario -->
+                                            <img src="{{ comment.comments_profile.profileimg.url }}" alt="Avatar2" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <div class="flex items-center space-x-2">
+                                                    <!-- Nombre de usuario -->
+                                                    <p><strong>{{ comment.user.username }}</strong></p>
+                                                    <!-- Fecha de creación del comentario -->
+                                                    <p style="font-size: 12px; color: #999;">{{ comment.created_at }}</p>
+                                                    {% if comment.user == request.user %}
+                                                        <form action="{% url 'delete_comment' comment.id %}" method="post" class="delete-comment-form">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 240px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <!-- Div editable para comentarios -->
+                                                <div class="comment-text" style="width: 430px; overflow: hidden; word-wrap: break-word;">
+                                                    <p>{{ comment.text }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- NO TOCAR -->
                             </div>
                         </div>
                         {% endfor %}
-
-                    <!-- right sidebar-->
-                    <div class="lg:w-5/12" style="position: sticky; top: 20px;">
-                        <div class="bg-white  shadow-md rounded-md overflow-hidden">
-                            <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 " style="position: sticky">
-                                <h2 class="font-semibold text-lg">Personas que puedes seguir</h2>
-                            </div>
-                            <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
-                                {% for suggestion in suggestions_username_profile_list %}
-                                <div class="flex items-center justify-between py-3">
-                                    <div class="flex flex-1 items-center space-x-4">
-                                        <a href="/profile/{{suggestion.user}}">
-                                            <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
-                                        </a>
-                                        <div class="flex flex-col">
-                                            <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
-                                            <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
-                                        </div>
-                                    </div>
-                                    <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> Ver usuario </a>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
                 </div>               
             </div>
         </div>
+
+        <div class="lg:w-5/12" style="position: fixed; left: 81%; top: 28%; transform: translate(-50%, -50%); width: 400px;">
+            <div class="bg-white shadow-md rounded-md overflow-hidden">
+        <div class="bg-gray-50 border-b border-gray-100 flex items-baseline justify-between py-4 px-6">
+            <h2 class="font-semibold text-lg">Personas que puedes seguir</h2>
+        </div>
+        <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4">
+            {% for suggestion in suggestions_username_profile_list %}
+            <div class="flex items-center justify-between py-3">
+                <div class="flex flex-1 items-center space-x-4">
+                    <a href="/profile/{{suggestion.user}}">
+                        <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
+                    </a>
+                    <div class="flex flex-col">
+                        <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
+                        <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
+                    </div>
+                </div>
+                <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600">Ver usuario</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+        
+        
+        
     </div>
  <!-- Scripts
     ================================================== -->
     <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
     <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/scrollPosition.js' %}"></script>
     <script src="{% static 'assets/js/uikit.js' %}"></script>
     <script src="{% static 'assets/js/simplebar.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
     <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+    <script>
+        function deleteNotification(notificationId) {       
+            fetch(`/delete_notification/${notificationId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const notificationElement = document.getElementById(`notification-${notificationId}`);
+                if (notificationElement) {
+                    notificationElement.remove();
+                }
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+    </script>
+
     <script>
     function validateSearch() {
         var searchQuery = document.getElementsByName("username")[0].value.trim(); // Obtener el valor del campo de búsqueda y eliminar espacios en blanco al principio y al final
@@ -392,6 +402,26 @@
         var remaining = maxLength - currentLength; // Calcular el número de caracteres restantes
         var count = maxLength - remaining; // Calcular el número de caracteres ingresados
         charCountElement.textContent = count; // Actualizar el contador de caracteres ingresados
+    }
+</script>
+
+<script>
+    function showAllComments(postId) {
+        // Mostrar los comentarios ocultos
+        document.getElementById('hiddenComments_' + postId).style.display = 'block';
+        // Ocultar el botón "Mostrar más comentarios"
+        document.getElementById('showMoreCommentsBtn_' + postId).style.display = 'none';
+        // Mostrar el botón "Ocultar comentarios"
+        document.getElementById('hideCommentsBtn_' + postId).style.display = 'block';
+    }
+
+    function hideAllComments(postId) {
+        // Ocultar los comentarios
+        document.getElementById('hiddenComments_' + postId).style.display = 'none';
+        // Mostrar el botón "Mostrar más comentarios"
+        document.getElementById('showMoreCommentsBtn_' + postId).style.display = 'block';
+        // Ocultar el botón "Ocultar comentarios"
+        document.getElementById('hideCommentsBtn_' + postId).style.display = 'none';
     }
 </script>
 
