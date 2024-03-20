@@ -28,7 +28,7 @@ def index(request):
     user_following_list = FollowersCount.objects.filter(follower=request.user.username).values_list('user', flat=True)
 
     # Obtain all publications, excluding your own
-    feed_list = Post.objects.exclude(user=request.user.username)
+    feed_list = Post.objects.all()
     for post in feed_list:
         for comment in post.comments.all():
             comment.comments_profile = Profile.objects.get(user=comment.user)
