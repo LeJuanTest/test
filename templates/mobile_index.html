@@ -14,71 +14,78 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://unpkg.com/feather-icons"></script>
+
 
 </head>
-<body>
-            <header>
+<body>  
+            <!-- Barra superior -->
+            <header style="height: 83px;">
                 <div class="header_inner">
                     <form action="/search" method="POST" onsubmit="return validateSearch()">
                     {% csrf_token %}
-                    <div class="left-side">
+                    <div class="left-side" style="width: 120px">
+
                         <!-- Logo -->
                         <div id="logo" class=" uk-hidden@s">
-                            <a href="home.html">
+                            <a href="/">
                                 <b><h1 style="text-transform: uppercase;"></h1></b>
                             </a>
                         </div>
-
                             <input type="text" name="username" minlength="1" maxlength="50" required placeholder="Busqueda">&nbsp; &nbsp;
-                            <button type="submit"><i class="fa fa-search fa-1x"></i></button>
-
                     </div>
                     </form>
+
+                    
+
                     <div class="right-side lg:pr-4">
+                        <a href="#" class="bg-pink-500 flex font-bold hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shadow text-white" style="height: 40px; margin-top: 7px;">
+                            <button id="toggleMenu" style="background: none; border: none; cursor: pointer;">
+                                <svg class="icon-feather-user-plus" data-feather="user-plus" style="width: 30px; height: 30px;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            </button>
+                        </a>
                           <!-- upload -->
-                        <a href="#"
-                        class="bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shado text-white">
-                        <ion-icon name="add-circle" class="-mb-1
-                         mr-1 opacity-90 text-xl uilus-circle"></ion-icon> Subir archivos
-                    </a>
+                          <a href="#" class="bg-pink-500 flex font-bold hover:bg-pink-600 hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shadow text-white" style="height: 40px; margin-top: 7px;">
+                            <ion-icon name="add-circle" class="-mb-1 mr-1 opacity-90 text-xl uilus-circle"></ion-icon> 
+                            <i class="icon-feather-upload" data-feather="upload" style="margin-left: -2px;" class="h-6 w-6"></i>
+                        </a>
+                        
+                        
+                           
                      <!-- upload dropdown box -->
                     <div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small" class="header_dropdown">
 
-                        <!-- notification header -->
+                        <!-- upload header -->
                         <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
                             <h4>Subir archivos</h4>
                         </div>
 
                         <!-- Uploading -->
                         <div class="flex justify-center flex-center text-center">
-
                             <div class="flex flex-col choose-upload text-center">
-                               
-                                <div class="bg-gray-300 border-2 border-dashed flex flex-col h-24 items-center justify-center relative w-full rounded-lg  ">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-12">
-                                        <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
-                                        <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
-                                    </svg>
-                                </div>
-
                                 <form action="upload" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                                     {% csrf_token %}
                                     <div>
-                                        <input type="file" name="image_upload" id="fileInput" style="display: none;" onchange="updateFileName()">
-                                        <label for="fileInput" class="button bg-pink-500 flex font-bold hidden hover:bg-pink-600 hover:text-white  justify-center lg:block h-10 px-4 py-2 rounded shado text-white">Elegir archivo</label>
+                                        <label for="fileInput" class="bg-gray-300 border-2 border-dashed flex flex-col h-24 items-center justify-center relative w-full rounded-lg">
+                                            <input type="file" name="image_upload" id="fileInput" class="hidden" accept="image/*, video/*, .gif" onchange="updateFileName()">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-12">
+                                                <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
+                                                <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
+                                            </svg>
+                                        </label>
+
                                         <span id="fileName" style="margin-left: 10px;"></span>
                                         <textarea class="button soft-warning small" name="caption" placeholder="Agregar texto.."></textarea>
                                         <br>
                                         <button class="button bg-blue-700" type="submit">Subir</button>
-                                    </div>
+                                    </div>                                    
                                 </form>
                             </div>
                         </div>
                     </div>
 
-                        
                         <!-- Notification -->
-                        <a href="#" class="header-links-item">
+                        <a href="#" class="header-links-item" style="margin-top: 7px;">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
                                 <g fill="none">
                                     <path d="M12 22a2.02 2.02 0 0 1-2.01-2h4a2.02 2.02 0 0 1-.15.78a2.042 2.042 0 0 1-1.44 1.18h-.047A1.922 1.922 0 0 1 12 22zm8-3H4v-2l2-1v-5.5a8.065 8.065 0 0 1 .924-4.06A4.654 4.654 0 0 1 10 4.18V2h4v2.18c2.579.614 4 2.858 4 6.32V16l2 1v2z" fill="currentColor"/>
@@ -104,6 +111,7 @@
                                                 </p>
                                                 <span class="time-ago">Hace {{ notification.timestamp|timesince }} </span>
                                             </div>
+
                                             <!-- X button -->
                                             <button class="delete-button" onclick="deleteNotification('{{ notification.id }}')">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
@@ -119,9 +127,9 @@
 
                         <!-- profile -->
                         <a href="#">
-                            <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
+                            <img src="{{user_profile.profileimg.url}}" class="header-avatar" style="margin-top: 5px" alt="" >
                         </a>
-                        <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
+                        <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t" >
                             <ul>
                                 <li><a href="/profile/{{user.username}}"> Cuenta </a> </li>
                                 <li><a href="logout"> Salir</a></li>
@@ -170,7 +178,6 @@
                                             </button>
                                         </form>
                                     {% endif %}
-
                                     </li>                                                    
                                     </ul>
                                 </div>
@@ -219,7 +226,7 @@
                                 <form id="commentForm_{{ post.id }}" action="{% url 'comment_post' post.id %}" method="post" onsubmit="return validateComment('{{ post.id }}')">
                                     {% csrf_token %}
                                     <input id="comment_{{ post.id }}" type="text" name="comment" placeholder="Comenta" minlength="1" maxlength="180" required class="bg-transparent max-h-10 shadow-none" oninput="countChars(this, document.getElementById('charCount_{{ post.id }}'))">
-                                    <span style="margin-left: 500px; margin-top: 90px; position:static" id="charCount_{{ post.id }}">0</span>/180
+                                    <span style="margin-left: 300px; margin-top: 90px; position:static" id="charCount_{{ post.id }}">0</span>/180
                                 </form>
                             </div>
 
@@ -233,17 +240,17 @@
                                                     <!-- Nombre de usuario -->
                                                     <p><strong>{{ comment.user.username }}</strong></p>
                                                     <!-- Fecha de creación del comentario -->
-                                                    <p style="font-size: 12px; color: #999;">{{ comment.created_at }}</p>
+                                                    <p style="font-size: 12px; color: #999; width: 200px;">{{ comment.created_at }}</p>
                                                     {% if comment.user == request.user %}
                                                         <form action="{% url 'delete_comment' comment.id %}" method="post" class="delete-comment-form" style="margin-right: 700;">
                                                             {% csrf_token %}
-                                                            <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 240px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
+                                                            <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 15px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
                                                         </form>
                                                     {% endif %}
                                                 </div>
                                                 <!-- Div editable para comentarios -->
                                                 <div id="comment_text" contenteditable="false" 
-                                                style="width: 430px; overflow: hidden; word-wrap: break-word;">
+                                                style="width: 300px; overflow: hidden; word-wrap: break-word;">
                                                     <p>{{ comment.text }}</p>
                                                 </div>
                                             </div>
@@ -251,11 +258,10 @@
                                     </div>
                                 {% endfor %}
 
-                                <!-- NADA -->
                             <!-- Ver más comentarios -->
                             {% if post.comments.count > 2 %}
-                            <button id="showMoreCommentsBtn_{{ post.id }}" style="margin-left: 200px; margin-top: 0px;" onclick="showAllComments('{{ post.id }}')">Ver más comentarios</button>
-                            <button id="hideCommentsBtn_{{ post.id }}" style="display: none; margin-left: 200px; margin-top: 0px;" onclick="hideAllComments('{{ post.id }}')">Ocultar comentarios</button>
+                            <button id="showMoreCommentsBtn_{{ post.id }}" style="margin-left: 100px; margin-top: 0px;" onclick="showAllComments('{{ post.id }}')">Ver más comentarios</button>
+                            <button id="hideCommentsBtn_{{ post.id }}" style="display: none; margin-left: 100px; margin-top: 0px;" onclick="hideAllComments('{{ post.id }}')">Ocultar comentarios</button>
                             {% endif %}
 
                             <!-- Contenedor de comentarios oculto -->
@@ -270,17 +276,17 @@
                                                     <!-- Nombre de usuario -->
                                                     <p><strong>{{ comment.user.username }}</strong></p>
                                                     <!-- Fecha de creación del comentario -->
-                                                    <p style="font-size: 12px; color: #999;">{{ comment.created_at }}</p>
+                                                    <p style="font-size: 12px; color: #999; width: 200px">{{ comment.created_at }}</p>
                                                     {% if comment.user == request.user %}
                                                         <form action="{% url 'delete_comment' comment.id %}" method="post" class="delete-comment-form">
                                                             {% csrf_token %}
-                                                            <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 240px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
+                                                            <button type="submit" class="delete-comment-btn" style="font-size: 12px; margin-left: 15px; margin-bottom: -35px; color: #fc2e2e;">  <span><strong> X </strong></span></button>
                                                         </form>
                                                     {% endif %}
                                                 </div>
                                                 
                                                 <!-- Div editable para comentarios -->
-                                                <div class="comment-text" style="width: 430px; overflow: hidden; word-wrap: break-word;">
+                                                <div class="comment-text" style="width: 300px; overflow: hidden; word-wrap: break-word;">
                                                     <p>{{ comment.text }}</p>
                                                 </div>
                                             </div>
@@ -297,33 +303,30 @@
             </div>
         </div>
 
-        <div class="lg:w-5/12" style="position: fixed; left: 81%; top: 28%; transform: translate(-50%, -50%); width: 400px;">
+        <div id="menu" class="lg:w-5/12" style="position: fixed; left: 50%; top: 28%; transform: translate(-50%, -50%); width: 400px; display: none;">
             <div class="bg-white shadow-md rounded-md overflow-hidden">
-        <div class="bg-gray-50 border-b border-gray-100 flex items-baseline justify-between py-4 px-6">
-            <h2 class="font-semibold text-lg">Personas que puedes seguir</h2>
-        </div>
-        <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4">
-            {% for suggestion in suggestions_username_profile_list %}
-            <div class="flex items-center justify-between py-3">
-                <div class="flex flex-1 items-center space-x-4">
-                    <a href="/profile/{{suggestion.user}}">
-                        <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
-                    </a>
-                    <div class="flex flex-col">
-                        <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
-                        <span class="block capitalize text-sm" style="width: 200px; overflow: hidden; word-wrap: break-word;"> {{suggestion.bio}} </span>
-                    </div>
+                <div class="bg-gray-50 border-b border-gray-100 flex items-baseline justify-between py-4 px-6">
+                    <h2 class="font-semibold text-lg">Personas que puedes seguir</h2>
                 </div>
-                <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600">Ver usuario</a>
+                <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4">
+                    {% for suggestion in suggestions_username_profile_list %}
+                    <div class="flex items-center justify-between py-3">
+                        <div class="flex flex-1 items-center space-x-4">
+                            <a href="/profile/{{suggestion.user}}">
+                                <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
+                            </a>
+                            <div class="flex flex-col">
+                                <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
+                                <span class="block capitalize text-sm" style="width: 200px; overflow: hidden; word-wrap: break-word;"> {{suggestion.bio}} </span>
+                            </div>
+                        </div>
+                        <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600">Ver usuario</a>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
-            {% endfor %}
         </div>
-    </div>
-</div>
-
-        
-        
-        
+ 
     </div>
  <!-- Scripts
     ================================================== -->
@@ -334,6 +337,32 @@
     <script src="{% static 'assets/js/simplebar.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
     <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+
+    <script>
+        document.getElementById('toggleMenu').addEventListener('click', function() {
+            var menu = document.getElementById('menu');
+            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+        });
+    </script>
+    <script>
+        feather.replace()
+    </script>
+    <script>
+        function validateForm() {
+            var fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Por favor, selecciona al menos un archivo.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script>
+        function updateFileName() {
+            var fileName = document.getElementById('fileInput').files[0].name;
+            document.getElementById('fileName').innerHTML = fileName;
+        }
+    </script>
     <script>
         function deleteNotification(notificationId) {       
             fetch(`/delete_notification/${notificationId}/`, {
@@ -440,21 +469,6 @@ function toggleFollow(postUser) {
     });
 }
     </script>
-<script>
-    function validateForm() {
-        var fileInput = document.getElementById('fileInput');
-        if (fileInput.files.length === 0) {
-            alert('Por favor, selecciona al menos un archivo.');
-            return false;
-        }
-        return true;
-    }
-</script>
-<script>
-    function updateFileName() {
-        var fileName = document.getElementById('fileInput').files[0].name;
-        document.getElementById('fileName').innerHTML = fileName;
-    }
-</script>
+
 </body>
 </html>

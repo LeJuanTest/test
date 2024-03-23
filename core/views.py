@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
+from django_user_agents.utils import get_user_agent
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
@@ -35,6 +36,7 @@ def index(request):
         for comment in post.comments.all():
             comment.comments_profile = Profile.objects.get(user=comment.user)
             comment.save()
+
     # user suggestion starts
     all_users = User.objects.all()
     user_following_all = User.objects.filter(username__in=user_following_list)
@@ -50,7 +52,16 @@ def index(request):
     suggestions_username_profile_list = username_profile_list
     final_user_following_list = user_following_list
 
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'final_user_following_list': final_user_following_list[:4], 'notifications': notifications})
+    # Detectar el tipo de dispositivo
+    user_agent = get_user_agent(request)
+    es_dispositivo_movil = user_agent.is_mobile
+
+    if es_dispositivo_movil:
+        template_name = 'mobile_index.html'
+    else:
+        template_name = 'index.html'
+
+    return render(request, template_name, {'user_profile': user_profile, 'posts': feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'final_user_following_list': final_user_following_list[:4], 'notifications': notifications})
 
 @login_required(login_url='signin')
 def comment_post(request, post_id):
@@ -138,7 +149,17 @@ def search(request):
             username_profile_list.append(profile_lists)
         
         username_profile_list = list(chain(*username_profile_list))
-    return render(request, 'search.html', {'user_profile': user_profile, 'username_profile_list': username_profile_list})
+
+          # Detectar el tipo de dispositivo
+    user_agent = get_user_agent(request)
+    es_dispositivo_movil = user_agent.is_mobile
+
+    if es_dispositivo_movil:
+        template_name = 'mobile_search.html'
+    else:
+        template_name = 'search.html'
+
+    return render(request, template_name, {'user_profile': user_profile, 'username_profile_list': username_profile_list})
 
 @login_required(login_url='signin')
 def like_post(request):
@@ -171,9 +192,9 @@ def profile(request, pk):
     user = pk
 
     if FollowersCount.objects.filter(follower=follower, user=user).first():
-        button_text = 'Dejar de seguir'
+        button_text = 'Eliminar'
     else:
-        button_text = 'Seguir'
+        button_text = 'Añadir'
 
     user_followers = len(FollowersCount.objects.filter(user=pk))
     user_following = len(FollowersCount.objects.filter(follower=pk))
@@ -187,7 +208,17 @@ def profile(request, pk):
         'user_followers': user_followers,
         'user_following': user_following,
     }
-    return render(request, 'profile.html', context)
+
+    # Detectar el tipo de dispositivo
+    user_agent = get_user_agent(request)
+    es_dispositivo_movil = user_agent.is_mobile
+
+    if es_dispositivo_movil:
+        template_name = 'mobile_profile.html'
+    else:
+        template_name = 'profile.html'
+
+    return render(request, template_name, context)
 
 @login_required(login_url='signin')
 def follow(request):
